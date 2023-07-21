@@ -32,8 +32,7 @@ from denoiseg.utils.compute_precision_threshold import isnotebook, compute_label
 from ..internals.DenoiSeg_DataWrapper import DenoiSeg_DataWrapper, DenoiSeg_ValDataWrapper
 from denoiseg.internals.losses import loss_denoiseg, denoiseg_denoise_loss, denoiseg_seg_loss
 from n2v.utils.n2v_utils import pm_identity, pm_normal_additive, pm_normal_fitted, pm_normal_withoutCP, pm_uniform_withCP
-from tqdm import tqdm
-from tqdm.notebook import tqdm as tqdm
+from tqdm import tqdm, tqdm_notebook
 
 
 class DenoiSeg(CARE):
@@ -409,7 +408,7 @@ class DenoiSeg(CARE):
         precision_result = []
         predictions_binary = []
         
-        for i in range(X.shape[0]):
+        for i in range(len(X)):
             if (np.max(Y[i])==0 and np.min(Y[i])==0):
                 continue
             else:
@@ -447,11 +446,11 @@ class DenoiSeg(CARE):
          """
         print('Computing best threshold: ')
         precision_scores = []
-        # if (isnotebook()):
-        #     progress_bar = tqdm
-        # else:
-        #     progress_bar = tqdm
-        for ts in tqdm(np.linspace(0.1, 1, 19)):
+        if (isnotebook()):
+            progress_bar = tqdm_notebook
+        else:
+            progress_bar = tqdm
+        for ts in progress_bar(np.linspace(0.1, 1, 19)):
             _, _, score, _ = self.predict_denoised_label_masks(X_val, Y_val, ts, measure, axes=axes)
             precision_scores.append((ts, score))
             print('Score for threshold =', "{:.2f}".format(ts), 'is', "{:.4f}".format(score))
