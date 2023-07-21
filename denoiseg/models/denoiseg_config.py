@@ -116,7 +116,7 @@ class DenoiSegConfig(argparse.Namespace):
             self.axes = axes
             # fixed parameters
             self.n_channel_in = kwargs['n_channel_in']
-            self.n_channel_out = 5
+            self.n_channel_out = 4
             self.train_loss = 'denoiseg'
 
             # default config (can be overwritten by kwargs below)
@@ -192,7 +192,7 @@ class DenoiSegConfig(argparse.Namespace):
             (self.train_loss in ('seg', 'denoiseg'))
         )
         ok['unet_n_depth'] = _is_int(self.unet_n_depth, 1)
-        ok['relative_weights'] = isinstance(self.relative_weights, list) and len(self.relative_weights) == 4 and all(
+        ok['relative_weights'] = isinstance(self.relative_weights, list) and len(self.relative_weights) == 3 and all(
             x > 0 for x in self.relative_weights)
         ok['unet_kern_size'] = _is_int(self.unet_kern_size, 1)
         ok['unet_n_first'] = _is_int(self.unet_n_first, 1)
